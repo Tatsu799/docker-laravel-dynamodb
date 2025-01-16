@@ -25,5 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/create-table', [DynamoDbController::class, 'createTable']);
 Route::get('/list-table', [DynamoDbController::class, 'listTables']);
 
-Route::post('/save-item', [DynamoDBController::class, 'saveToDynamoDB']);
+// Route::post('/save-item', [DynamoDBController::class, 'saveToDynamoDB']);
+Route::post('/insert-item', [DynamoDBController::class, 'insertItem']);
 Route::get('/dynamodb/items', [DynamoDBController::class, 'getItems']);
+Route::put('/store/{storeID}/order/{orderID}/remark', [DynamoDBController::class, 'updateRemark']);

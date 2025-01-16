@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Exception\DynamoDbException;
 use App\Models\DynamoDbModel;
 
 class DynamoDbController extends Controller
 {
 
     protected $dynamoDb;
+    private $tableName = 'TestTable';
 
     public function __construct()
     {
@@ -54,18 +56,33 @@ class DynamoDbController extends Controller
     public function insertItem(Request $request)
     {
         // リクエストからデータを取得
-        $id = $request->input('id');
-        $name = $request->input('name');
+        // $id = $request->input('id');
+        // $name = $request->input('name');
 
-        // DynamoDbModel
-        $dynamoDbItem = new DynamoDbModel();
-        $result = $dynamoDbItem->insertItem($id, $name);
+        // // DynamoDbModel
+        // $dynamoDbItem = new DynamoDbModel();
+        // $result = $dynamoDbItem->insertItem($id, $name);
 
-        // 成功した場合、レスポンスを返す
-        return response()->json([
-            'message' => 'Item inserted successfully',
-            'data' => $result
-        ]);
+        // // 成功した場合、レスポンスを返す
+        // return response()->json([
+        //     'message' => 'Item inserted successfully',
+        //     'data' => $result
+        // ]);
+        try {
+            $result = $this->dynamoDb->putItem([
+                'TableName' => 'TestTable',
+                'Item' => [
+                    'store_id' => ['S' => 'store123'], // パーティションキー
+                    'order_id' => ['S' => 'order456'], // ソートキー
+                    'remark' => ['S' => 'This is a sample remark.'], // 任意のフィールド
+                    'created_at' => ['S' => now()->toIso8601String()],
+                ],
+            ]);
+
+            return response()->json(['message' => 'Data inserted successfully.', 'details' => $result], 200);
+        } catch (DynamoDbException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     // テーブルを作成するメソッド
@@ -75,19 +92,15 @@ class DynamoDbController extends Controller
             $result = $this->dynamoDb->createTable([
                 'TableName' => 'TestTable',
                 'KeySchema' => [
-                    [
-                        'AttributeName' => 'id',
-                        'KeyType' => 'HASH',  // 主キー
-                    ],
+                    ['AttributeName' => 'store_id', 'KeyType' => 'HASH'], // パーティションキー
+                    ['AttributeName' => 'order_id', 'KeyType' => 'RANGE'], // ソートキー（オプション）
                 ],
                 'AttributeDefinitions' => [
-                    [
-                        'AttributeName' => 'id',
-                        'AttributeType' => 'S',  // 'S'は文字列型
-                    ],
+                    ['AttributeName' => 'store_id', 'AttributeType' => 'S'], // 文字列型
+                    ['AttributeName' => 'order_id', 'AttributeType' => 'S'], // 文字列型
                 ],
                 'ProvisionedThroughput' => [
-                    'ReadCapacityUnits'  => 5,
+                    'ReadCapacityUnits' => 5,
                     'WriteCapacityUnits' => 5,
                 ],
             ]);
@@ -141,5 +154,47 @@ class DynamoDbController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function updateRemark(Request $request)
+    {
+        $request->validate([
+            'store_id' => 'required|string',
+            'order_id' => 'required|string',
+            'remark' => 'required|array',
+            'remark.*.name' => 'nullable|string|max:255',
+            'remark.*.info' => 'nullable|string|max:255',
+        ]);
+
+        $storeId = $request->input('store_id');
+        $orderId = $request->input('order_id');
+        $remark = $request->input('remark');
+
+        try {
+            $this->dynamoDb->updateItem([
+                'TableName' => $this->tableName,
+                'Key' => [
+                    'store_id' => ['S' => $storeId],
+                    'order_id' => ['S' => $orderId],
+                ],
+                'UpdateExpression' => 'SET remark = :remark',
+                'ExpressionAttributeValues' => [
+                    ':remark' => ['S' => json_encode($remark)],
+                ]
+            ]);
+
+            return response()->json(
+                [
+                    'message' => 'Remark update successfully.',
+                    'body' =>
+                    [
+                        true,
+                    ]
+                ],
+                200
+            );
+        } catch (DynamoDbException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        };
     }
 }

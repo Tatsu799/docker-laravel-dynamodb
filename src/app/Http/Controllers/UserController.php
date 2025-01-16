@@ -12,7 +12,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->dynamoDbModel = new DynamoDbModel('Users');  // DynamoDB のテーブル名
+        // $this->dynamoDbModel = new DynamoDbModel('Users');  // DynamoDB のテーブル名
     }
 
     // ユーザー情報を保存するアクション

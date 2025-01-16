@@ -28,18 +28,18 @@ class DynamoDbModel extends Model
     }
 
     // データ挿入用メソッド
-    public function insertItem($id, $name)
-    {
-        $client = $this->getClient();
+    // public function insertItem($id, $name)
+    // {
+    //     $client = $this->getClient();
 
-        $result = $client->putItem([
-            'TableName' => $this->table,
-            'Item' => [
-                'id' => ['S' => $id],
-                'name' => ['S' => $name],
-            ],
-        ]);
+    //     $result = $client->putItem([
+    //         'TableName' => $this->table,
+    //         'Item' => [
+    //             'id' => ['S' => $id],
+    //             'name' => ['S' => $name],
+    //         ],
+    //     ]);
 
-        return $result;
-    }
+    //     return $result;
+    // }
 }
