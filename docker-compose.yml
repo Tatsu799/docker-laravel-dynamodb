@@ -1,0 +1,37 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - '8080:80'
+    depends_on:
+      - php
+    networks:
+      - laravel_network
+
+  php:
+    build:
+      context: ./docker/php
+    container_name: php
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - laravel_network
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb-local
+    ports:
+      - '8000:8000' # ホストの8000ポートをコンテナにマッピング
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data' # 永続化モードを有効にし、保存先パスを指定
+    volumes:
+      - ./dynamodb:/home/dynamodblocal/data # データの永続化用
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+    driver: bridge
