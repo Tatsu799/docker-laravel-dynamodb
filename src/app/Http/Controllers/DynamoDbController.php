@@ -90,7 +90,7 @@ class DynamoDbController extends Controller
     {
         try {
             $result = $this->dynamoDb->createTable([
-                'TableName' => 'TestTable',
+                'TableName' => 'Order',
                 'KeySchema' => [
                     ['AttributeName' => 'store_id', 'KeyType' => 'HASH'], // パーティションキー
                     ['AttributeName' => 'order_id', 'KeyType' => 'RANGE'], // ソートキー（オプション）

@@ -11,7 +11,8 @@ return [
     | to use as your default connection for all DynamoDb work.
     */
 
-    'default' => env('DYNAMODB_CONNECTION', 'aws'),
+    // 'default' => env('DYNAMODB_CONNECTION', 'aws'),
+    'default' => env('DYNAMODB_CONNECTION', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,13 +44,13 @@ return [
         ],
         'local' => [
             'credentials' => [
-                'key' => 'dummykey',
-                'secret' => 'dummysecretkey',
+                'key' => env('DYNAMODB_KEY'),
+                'secret' => env('DYNAMODB_SECRET'),
             ],
             // 'region' => 'stub',
-            'region' => 'us-east-1',
+            'region' => env('DYNAMODB_REGION'),
             // see http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
-            'endpoint' => 'http://dynamodb-local:8000',
+            'endpoint' => env('DYNAMODB_ENDPOINT'),
             'debug' => true,
         ],
         'test' => [
