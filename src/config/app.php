@@ -169,6 +169,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         BaoPham\DynamoDb\DynamoDbServiceProvider::class,
+        App\Providers\DynamoDbServiceProvider::class,
     ])->toArray(),
 
     /*
