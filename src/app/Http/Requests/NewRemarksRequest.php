@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class NewRemarksRequest extends FormRequest
 {
@@ -39,5 +41,16 @@ class NewRemarksRequest extends FormRequest
             "newRemarks.*.body.string" => "The body must be a string.",
             "newRemarks.*.body.max" => "The body may not be greater than 255 characters.",
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 422)
+        );
     }
 }

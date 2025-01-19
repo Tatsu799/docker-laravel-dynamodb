@@ -8,6 +8,7 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use BaoPham\DynamoDb\DynamoDbModel;
 use App\Http\Requests\NewRemarksRequest;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -81,15 +82,21 @@ class OrderController extends Controller
     // public function updateRemarks(Request $request, $storId)
     public function updateRemarks(NewRemarksRequest $request, $storId)
     {
-
         // $validated = $request->validate([
         //     "newRemarks" => "required|array",
         //     "newRemarks.*.name" => 'required|string|max:255',
         //     "newRemarks.*.body" => 'nullable|string|max:255',
+        // ], [
+        //     'newRemarks.required' => '新しいリマークは必須です。',
+        //     'newRemarks.array' => '新しいリマークは配列である必要があります。',
+        //     'newRemarks.*.name.required' => 'リマークの名前は必須です。',
+        //     'newRemarks.*.name.string' => 'リマークの名前は文字列である必要があります。',
+        //     'newRemarks.*.name.max' => 'リマークの名前は255文字以内で入力してください。',
+        //     'newRemarks.*.body.string' => 'リマークの本文は文字列である必要があります。',
+        //     'newRemarks.*.body.max' => 'リマークの本文は255文字以内で入力してください。',
         // ]);
 
         $validated = $request->validated();
-        // dd($validated);
 
         try {
             $order = OrderModel::find($storId);
