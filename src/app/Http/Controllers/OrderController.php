@@ -108,7 +108,7 @@ class OrderController extends Controller
                 foreach ($newRemarks as $newRemark) {
 
                     $isNew = true;
-                    foreach ($existingRemarks as &$existingRemark) {
+                    foreach ($existingRemarks as &$existingRemark) { //&$existingRemark 参照渡し
 
                         // if (strcmp($newRemark['name'], $existingRemark['name']) === 0 && strcmp($newRemark['body'], $existingRemark['body']) === 0) {
                         if ($newRemark['name'] === $existingRemark['name'] && $newRemark['body'] === $existingRemark['body']) {
