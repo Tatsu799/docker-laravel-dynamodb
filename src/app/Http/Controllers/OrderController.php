@@ -108,6 +108,7 @@ class OrderController extends Controller
                             break;
                         }
 
+
                         if ($newRemark['name'] == $existingRemark['name'] && $newRemark['body'] !== $existingRemark['body']) {
                             $existingRemark['body'] = $newRemark['body'];
                             $shouldUpdate = true;
