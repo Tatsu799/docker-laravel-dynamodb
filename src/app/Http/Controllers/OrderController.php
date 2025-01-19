@@ -103,15 +103,16 @@ class OrderController extends Controller
                     $isNew = true;
                     foreach ($existingRemarks as &$existingRemark) {
 
-                        // if ($newRemark['name'] === $existingRemark['name'] && $newRemark['body'] === $existingRemark['body']) {
-                        if (strcmp($newRemark['name'], $existingRemark['name']) === 0 && strcmp($newRemark['body'], $existingRemark['body']) === 0) {
+                        if ($newRemark['name'] == $existingRemark['name'] && $newRemark['body'] == $existingRemark['body']) {
+                            // if (strcmp($newRemark['name'], $existingRemark['name']) === 0 && strcmp($newRemark['body'], $existingRemark['body']) === 0) {
                             $isNew = false;
                             break;
                         }
 
-                        if (
-                            strcmp($newRemark['name'], $existingRemark['name']) === 0 && strcmp($newRemark['body'], $existingRemark['body']) !== 0
-                        ) {
+                        // if (
+                        //   strcmp($newRemark['name'], $existingRemark['name']) === 0 && strcmp($newRemark['body'], $existingRemark['body']) !== 0
+                        // ){
+                        if ($newRemark['name'] == $existingRemark['name'] && $newRemark['body'] !== $existingRemark['body']) {
                             $existingRemark['body'] = $newRemark['body'];
                             $shouldUpdate = true;
                             $isNew = false;
