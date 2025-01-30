@@ -70,12 +70,10 @@ class DynamoDbController extends Controller
         // ]);
         try {
             $result = $this->dynamoDb->putItem([
-                'TableName' => 'TestTable',
+                'TableName' => 'Test',
                 'Item' => [
-                    'store_id' => ['S' => 'store123'], // パーティションキー
-                    'order_id' => ['S' => 'order456'], // ソートキー
-                    'remark' => ['S' => 'This is a sample remark.'], // 任意のフィールド
-                    'created_at' => ['S' => now()->toIso8601String()],
+                    'id' => ['N' => '123'], // パーティションキー
+                    'order_id' => ['N' => 'order1'], // ソートキー
                 ],
             ]);
 

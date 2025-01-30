@@ -8,6 +8,7 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use BaoPham\DynamoDb\DynamoDbModel;
 use App\Http\Requests\NewRemarksRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
@@ -22,7 +23,7 @@ class OrderController extends Controller
     }
     public function createTable()
     {
-        $table = 'orders2';
+        $table = 'orders';
         // $connection = config('dynamodb.default');
         // $config = config("dynamodb.connections.$connection");
 
@@ -52,9 +53,8 @@ class OrderController extends Controller
     public function addItems(Request $request)
     {
         $validated = $request->validate([
-            'store_id' => 'required|string',
-            'order_id' => 'required|string',
-            'remarks' => 'required|string',
+            'id' => 'required|int',
+            'order_id' => 'required|int',
         ]);
 
         // $client = new DynamoDbClient($this->config);
@@ -63,10 +63,9 @@ class OrderController extends Controller
 
         try {
             $result = $order->create([
-                'TableName' => 'orders',
-                'store_id' => $validated['store_id'],
+                'TableName' => 'Test',
+                'id' => $validated['id'],
                 'order_id' => $validated['order_id'],
-                'remarks' => $validated['remarks'],
             ]);
 
             // dd($result);
@@ -96,12 +95,13 @@ class OrderController extends Controller
         //     'newRemarks.*.body.max' => 'リマークの本文は255文字以内で入力してください。',
         // ]);
 
-        $validated = $request->validated();
+        // $validated = $request->validated();
 
         try {
             $order = OrderModel::find($storId);
             $existingRemarks = json_decode($order->newRemarks, true);
-            $newRemarks = $validated['newRemarks'];
+            // $newRemarks = $validated['newRemarks'];
+            $newRemarks = $request['newRemarks'];
 
             $shouldUpdate = false;
             if (!empty($existingRemarks)) {

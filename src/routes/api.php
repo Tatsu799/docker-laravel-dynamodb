@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::post('/save-item', [DynamoDBController::class, 'saveToDynamoDB']);
 Route::post('/insert-item', [DynamoDBController::class, 'insertItem']);
 Route::get('/dynamodb/items', [DynamoDBController::class, 'getItems']);
-Route::put('/store/{storeID}/order/{orderID}/remark', [DynamoDBController::class, 'updateRemark']);
+// Route::put('/store/{storeID}/order/{orderID}/remark', [DynamoDBController::class, 'updateRemark']);
 
 Route::post('/createTable', [OrderController::class, 'createTable']);
 Route::post('/addItems', [OrderController::class, 'addItems']);
